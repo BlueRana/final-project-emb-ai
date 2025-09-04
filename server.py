@@ -14,6 +14,7 @@ def detector():
 
     if result.get('dominant_emotion') is None:
         return f"Invalid Text! Please Try Again"
+
     # Extract emotion scores from result
     anger = result.get('anger', 0)
     disgust = result.get('disgust', 0)
@@ -35,4 +36,4 @@ def index():
     return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port=5000)
