@@ -21,17 +21,31 @@ def emotion_detector(text_to_analyze):
     header = {"grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"}
     # Send a POST request to the API with the text and headers
     response = requests.post(url, json = myobj, headers=header) 
+ 
+    emotions = {}
+    #Check if status code of response if OK
+    if response.status_code == 200:
+        # If successful, parse the JSON response
+        response_dict = response.json() 
+        # Extract the required set of emotions
+        emotions =response_dict["emotionPredictions"][0]["emotion"]
+        #Can combine top to lines to be:
+         #emotions = response.json()["emotionPredictions"][0]["emotion"]
+      
+        # Find the dominant emotion (emotion with the highest score)
+        dominant_emotion = max(emotions, key=emotions.get)
     
-    response_dict = response.json()
-
-    emotions =response_dict["emotionPredictions"][0]["emotion"]
-    #Can combine top to lines to be:
-    #emotions = response.json()["emotionPredictions"][0]["emotion"]
-    
-    # Find the dominant emotion (emotion with the highest score)
-    dominant_emotion = max(emotions, key=emotions.get)
-    
-    # Add dominant emotion to the dictionary
-    emotions['dominant_emotion'] = dominant_emotion
-    
+        # Add dominant emotion to the dictionary
+        emotions['dominant_emotion'] = dominant_emotion
+   
+    elif response.status_code == 400:
+        # Return dictionary with None values for all emotions and dominant_emotion
+        emotions = {
+            'anger': None,
+            'disgust': None,
+            'fear': None,
+            'joy': None,
+            'sadness': None,
+            'dominant_emotion': None
+        }
     return emotions
